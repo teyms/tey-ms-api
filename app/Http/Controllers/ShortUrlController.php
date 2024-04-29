@@ -17,13 +17,6 @@ class ShortUrlController extends Controller
     public function getRedirectUrl($shorturl){
         $short_url_exist = ShortUrl::where('url', $shorturl)->first();
 
-        $result = [
-            'success'   => 0,
-            'msg'       => 'failed. not found',
-            'ori_url'   => null
-        ];
-        $result_code = 422;
-
         if($short_url_exist && $short_url_exist->ori_url){
 
             $short_url_exist->used_count += 1;
@@ -32,10 +25,23 @@ class ShortUrlController extends Controller
             $result = [
                 'success'   => 1,
                 'msg'       => 'Successfully Added ShortURl',
-                'ori_url'   => $short_url_exist->ori_url
+                'data'      => [
+                    'ori_url'   => $short_url_exist->ori_url
+                ]
             ];
             $result_code = 200;
+            
+            return response()->json($result, $result_code);
         } 
+
+        $result = [
+            'success'   => 0,
+            'msg'       => 'failed. not found',
+            'data'      => [
+                'ori_url'   => null
+            ]
+        ];
+        $result_code = 422;
 
         return response()->json($result, $result_code);
     }
@@ -62,7 +68,10 @@ class ShortUrlController extends Controller
             } catch (Exception $error){
                 $result = [
                     'success'   => 0,
-                    'msg'       => $error
+                    'msg'       => $error,
+                    'data'      => [
+                        'shorten_url'   => null
+                    ]
                 ];
                 $result_code = 422;
 
