@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'sanitize' => \App\Http\Middleware\InputSanitization::class,
+        'concurrent' => \App\Http\Middleware\ConcurrentRequestsThrottle::class,
     ];
 }
