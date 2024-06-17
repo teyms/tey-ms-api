@@ -1,0 +1,24 @@
+[2024-06-15 06:03:40] local.INFO: $key  
+[2024-06-15 06:03:40] local.INFO: concurrent_requests:http://localhost:8000/api/shorturl  
+[2024-06-15 06:03:40] local.INFO: input  
+[2024-06-15 06:03:40] local.INFO: array (
+  'ori_url' => 'https://www.tey-ms.com',
+)  
+[2024-06-15 06:03:40] local.INFO: $forget  
+[2024-06-17 01:46:58] local.ERROR: include(D:\wamp64\www\tey-ms-api\vendor\composer/../../app/Providers/AppServiceProvider.php): Failed to open stream: No such file or directory {"exception":"[object] (ErrorException(code: 0): include(D:\\wamp64\\www\\tey-ms-api\\vendor\\composer/../../app/Providers/AppServiceProvider.php): Failed to open stream: No such file or directory at D:\\wamp64\\www\\tey-ms-api\\vendor\\composer\\ClassLoader.php:576)
+[stacktrace]
+#0 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\HandleExceptions.php(254): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError(2, 'include(D:\\\\wamp...', 'D:\\\\wamp64\\\\www\\\\t...', 576)
+#1 D:\\wamp64\\www\\tey-ms-api\\vendor\\composer\\ClassLoader.php(576): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}(2, 'include(D:\\\\wamp...', 'D:\\\\wamp64\\\\www\\\\t...', 576)
+#2 D:\\wamp64\\www\\tey-ms-api\\vendor\\composer\\ClassLoader.php(576): include('D:\\\\wamp64\\\\www\\\\t...')
+#3 D:\\wamp64\\www\\tey-ms-api\\vendor\\composer\\ClassLoader.php(427): Composer\\Autoload\\{closure}('D:\\\\wamp64\\\\www\\\\t...')
+#4 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(827): Composer\\Autoload\\ClassLoader->loadClass('App\\\\Providers\\\\A...')
+#5 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(761): Illuminate\\Foundation\\Application->resolveProvider('App\\\\Providers\\\\A...')
+#6 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\ProviderRepository.php(75): Illuminate\\Foundation\\Application->register('App\\\\Providers\\\\A...')
+#7 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(741): Illuminate\\Foundation\\ProviderRepository->load(Array)
+#8 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Bootstrap\\RegisterProviders.php(17): Illuminate\\Foundation\\Application->registerConfiguredProviders()
+#9 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Application.php(261): Illuminate\\Foundation\\Bootstrap\\RegisterProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#10 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(434): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#11 D:\\wamp64\\www\\tey-ms-api\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(198): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#12 Command line code(1): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#13 {main}
+"} 
