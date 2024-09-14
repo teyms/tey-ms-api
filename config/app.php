@@ -185,4 +185,15 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+        /*
+    |--------------------------------------------------------------------------
+    | Not_Build in, Self Added config
+    |--------------------------------------------------------------------------
+    |
+    | This is the list of self added config, that initiate in the .env file
+    |
+    */
+
+    'tng_convert_csv_python' => env('TNG_CONVERT_CSV_PYTHON', null),
+
 ];

@@ -40,9 +40,8 @@ class TngFileConvertController extends Controller
                 }
 
                 $command_output = Artisan::output();
-                \Log::info('$command_output');
-                \Log::info(json_decode($command_output));
-                // \Log::info(json_encode($command_output));
+                Log::info('$command_output');
+                Log::info(json_decode($command_output));
 
                 $command_output_json = json_decode($command_output);
                 if($command_output_json && !$command_output_json->success) throw new Exception("Failed to process file " . $params['name'] ?? '');
@@ -69,9 +68,6 @@ class TngFileConvertController extends Controller
 
 
         } catch (Exception $error){
-
-            // \Log::info('$error');
-            // \Log::info($error);
             $result = [
                 'success'   => 0,
                 'msg'       => $error,
