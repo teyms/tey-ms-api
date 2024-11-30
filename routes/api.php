@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogPostsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Log;
@@ -46,8 +47,11 @@ Route::middleware('concurrent')->group(function () {
         });
 
         Route::name('tng.')->prefix('tng')->group(function () {
-            // Route::get('/{shorturl}',   [TngFileConvert::class, 'getRedirectUrl']);
             Route::post('/',            [TngFileConvertController::class, 'store']);
+        });
+
+        Route::name('blog.')->prefix('blog')->group(function(){
+            Route::get('/{slug}',   [BlogPostsController::class, 'get']);
         });
 
         // Route::name('test.')->prefix('test')->group(function () {
