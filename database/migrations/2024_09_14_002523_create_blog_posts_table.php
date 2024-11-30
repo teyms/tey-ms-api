@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('short_url', function (Blueprint $table) {
+        Schema::create('blog_posts', function (Blueprint $table) {
             $table->id();
-            $table->string('url')->unique();
-            $table->string('ori_url');
-            $table->string('ip_address')->nullable();
-            $table->integer('used_count')->default(0);
-            $table->dateTime('expired_date')->nullable();
+            $table->string('slug')->unique();
+            $table->string('title');
+            // $table->text('content');
+            $table->json('content');
+            $table->tinyInteger('status')->default(0)->comment('0:Draft | 1:published');
+            $table->string('tag');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('short_url');
+        Schema::dropIfExists('blog_posts');
     }
 };
