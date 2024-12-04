@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'sanitize' => \App\Http\Middleware\InputSanitization::class,
         'concurrent' => \App\Http\Middleware\ConcurrentRequestsThrottle::class,
+        'custom.auth' => \App\Http\Middleware\VerifyToken::class,
     ];
 }

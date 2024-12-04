@@ -9,6 +9,7 @@ use App\Http\Middleware\InputSanitization;
 
 use App\Http\Controllers\ShortUrlController;
 use App\Http\Controllers\TngFileConvertController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Middleware\ConcurrentRequestsThrottle;
 
 // use App\Models\TngFileConvert;
@@ -28,6 +29,14 @@ use App\Http\Middleware\ConcurrentRequestsThrottle;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+// Route::middleware('google.auth')->group(function () {
+//     // Route::get('/user/profile', [UserController::class, 'profile']);
+//     // Route::post('/shorturl/create', [ShortUrlController::class, 'store']);
+// });
+
+Route::post('/googleauth/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+Route::post('/logout', [GoogleAuthController::class, 'logout']);
 
 Route::middleware('concurrent')->group(function () {
 // Route::middleware([ConcurrentRequestsThrottle::class])->group(function () {

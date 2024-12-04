@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use \App\Models\PersonalAccessTokens;
 
 class User extends Authenticatable
 {
@@ -18,8 +19,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'google_id',
+        'google_avatar',
         'name',
         'email',
+        'email_verified_at',
         'password',
     ];
 
@@ -29,6 +33,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
+        'id',
+        'google_id',
         'password',
         'remember_token',
     ];
@@ -42,4 +48,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // public function tokens()
+    // {
+    //     return $this->hasMany(PersonalAccessTokens::class);
+    // }
+
+    // public function latestToken()
+    // {
+    //     return $this->hasOne(PersonalAccessTokens::class)->latest();
+    // }
 }
