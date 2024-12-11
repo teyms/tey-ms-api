@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\PersonalAccessTokens;
+use App\Models\User;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,38 +23,75 @@ class VerifyToken
         $authHeader = $request->header('Authorization');
 
         if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            $request->merge(['is_authenticated' => false]);
+
+        }else{    
+            $token = substr($authHeader, 7);
+    
+            $isAuthenticated = $this->validateToken($token);
+            if($isAuthenticated && $isAuthenticated['success']){
+                $request->merge(['user' => $isAuthenticated['user']]);
+                $request->merge(['is_authenticated' => true]);
+            }else{
+                $request->merge(['user' => null]);
+                $request->merge(['is_authenticated' => false]);   
+                
+                $result = [
+                    'success'   => $isAuthenticated['success'],
+                    'msg'       => $isAuthenticated['msg'],
+                    'expired'   => $isAuthenticated['expired'],
+                    'user'      => null
+                ];
+                return response()->json($result, 401);
+            }
+            
         }
+        return $next($request);
+    }
 
-        $token = substr($authHeader, 7);
-
-        // Verify the token with Google's API
-        $http = new Client();
+    private function validateToken($authToken){
         try {
-            $response = $http->get('https://www.googleapis.com/oauth2/v3/tokeninfo', [
-                'query' => ['id_token' => $token],
-            ]);
+            $personalAccessToken = PersonalAccessTokens::Where('token', $authToken)->latest()->first();
 
-            $googleUser = json_decode($response->getBody(), true);
+            if($personalAccessToken){
+                $test = Carbon::parse($personalAccessToken->expires_at);
+                if($personalAccessToken->expires_at && Carbon::parse($personalAccessToken->expires_at)->isPast()){
+                    $result = [
+                        'success'   => 0,
+                        'msg'       => 'Token has expired, Please Login again!',
+                        'expired'   => true,
+                        'user'      => null,
+                    ];
+                    return $result;
+                }
 
-            // Check for required fields
-            if (!isset($googleUser['email'])) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+                $user = User::where('id', $personalAccessToken->tokenable_id)->first();
+                if ($user) {
+                    $result = [
+                        'success'   => 1,
+                        'msg'       => 'Token has expired, Please Login again!',
+                        'expired'   => true,                        
+                        'user'      => $user
+                    ];
+                    return $result;
+                }
             }
-
-            // Optionally, match the email with your database
-            $user = \App\Models\User::where('email', $googleUser['email'])->first();
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-
-            // Add the authenticated user to the request
-            $request->merge(['user' => $user]);
 
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Invalid Google token'], 401);
+            $result = [
+                'success'   => 0,
+                'msg'       => 'Authentication Failed',
+                'expired'   => false,                
+                'user'      => null
+            ];
+            return $result;
         }
-
-        return $next($request);
+        $result = [
+            'success'   => 0,
+            'msg'       => 'Authentication Failed',
+            'expired'   => false,            
+            'user'      => null
+        ];
+        return $result;
     }
 }

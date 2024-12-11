@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'sanitize' => \App\Http\Middleware\InputSanitization::class,
         'concurrent' => \App\Http\Middleware\ConcurrentRequestsThrottle::class,
         'custom.auth' => \App\Http\Middleware\VerifyToken::class,
+        'auth.required' => \App\Http\Middleware\AuthRequired::class,
     ];
 }
