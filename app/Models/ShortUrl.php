@@ -21,5 +21,6 @@ class ShortUrl extends Model
         'ip_address',
         'click_count',
         'expires_at',
+        'active',
     ];
 }

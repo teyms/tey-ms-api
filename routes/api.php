@@ -45,16 +45,19 @@ Route::middleware(['concurrent', 'sanitize','custom.auth'])->group(function () {
 
         Route::name('auth.')->prefix('auth')->group(function(){
             Route::name('shorturl.')->prefix('shorturl')->group(function(){
+                Route::get('/list',         [ShortUrlController::class, 'getListByUser']);
                 Route::post('/',            [ShortUrlController::class, 'storeAuth']);
+                Route::put('/',             [ShortUrlController::class, 'updateAuth']);
+                Route::delete('/{id}',      [ShortUrlController::class, 'deleteAuth']);
             });
         });
     });
     
     Route::post('/googleauth/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
     Route::name('shorturl.')->prefix('shorturl')->group(function(){
-        Route::get('/{customPath}/{shorturl}',   [ShortUrlController::class, 'getRedirectUrl']);
-        Route::get('/{shorturl}',   [ShortUrlController::class, 'getRedirectUrlGuest']);
-        Route::post('/',            [ShortUrlController::class, 'store']);
+        Route::get('/{customPath}/{shorturl}',  [ShortUrlController::class, 'getRedirectUrl']);
+        Route::get('/{shorturl}',               [ShortUrlController::class, 'getRedirectUrlGuest']);
+        Route::post('/',                        [ShortUrlController::class, 'store']);
     });
 
     Route::name('tng.')->prefix('tng')->group(function () {
