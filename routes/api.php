@@ -9,7 +9,9 @@ use App\Http\Middleware\InputSanitization;
 
 use App\Http\Controllers\ShortUrlController;
 use App\Http\Controllers\TngFileConvertController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Middleware\ConcurrentRequestsThrottle;
+use App\Http\Middleware\VerifyToken;
 
 // use App\Models\TngFileConvert;
 
@@ -29,37 +31,45 @@ use App\Http\Middleware\ConcurrentRequestsThrottle;
 //     return $request->user();
 // });
 
-Route::middleware('concurrent')->group(function () {
+
+
+
+
+Route::middleware(['concurrent', 'sanitize','custom.auth'])->group(function () {
 // Route::middleware([ConcurrentRequestsThrottle::class])->group(function () {
     // Route::middleware(['check.site.prefix'])->name('member.')->prefix('member')->namespace('User')->group(function () {
     //     Route::middleware(['guest'])->group(function () {
 
-    // Route::middleware(['sanitize'])->name('shorturl.')->prefix('shorturl')->group(function () {
-    Route::middleware(['sanitize'])->group(function () {
-        Route::name('shorturl.')->prefix('shorturl')->group(function(){
-            // Route::get('/',   'ShortUrlController@redirect');
-            // Route::get('/{shorturl}',   'ShortUrlController@redirect');
-            // Route::post('/',            'ShortUrlController@store');
-    
-            // Route::get('/',   [ShortUrlController::class, 'redirect']);
-            Route::get('/{shorturl}',   [ShortUrlController::class, 'getRedirectUrl']);
-            Route::post('/',            [ShortUrlController::class, 'store']);
+    Route::middleware(['auth.required'])->group(function () {
+        Route::post('/logout', [GoogleAuthController::class, 'logout']);
+
+        Route::name('auth.')->prefix('auth')->group(function(){
+            Route::name('shorturl.')->prefix('shorturl')->group(function(){
+                Route::post('/',            [ShortUrlController::class, 'storeAuth']);
+            });
         });
-
-        Route::name('tng.')->prefix('tng')->group(function () {
-            Route::post('/',            [TngFileConvertController::class, 'store']);
-        });
-
-        Route::name('blog.')->prefix('blog')->group(function(){
-            Route::get('/{slug}',   [BlogPostsController::class, 'get']);
-        });
-
-        // Route::name('test.')->prefix('test')->group(function () {
-        //     Route::get('/', 'testController@index');
-        //     Route::get('/{id}', 'testController@show');
-        // });
-
     });
+    
+    Route::post('/googleauth/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+    Route::name('shorturl.')->prefix('shorturl')->group(function(){
+        Route::get('/{customPath}/{shorturl}',   [ShortUrlController::class, 'getRedirectUrl']);
+        Route::get('/{shorturl}',   [ShortUrlController::class, 'getRedirectUrlGuest']);
+        Route::post('/',            [ShortUrlController::class, 'store']);
+    });
+
+    Route::name('tng.')->prefix('tng')->group(function () {
+        Route::post('/',            [TngFileConvertController::class, 'store']);
+    });
+
+    Route::name('blog.')->prefix('blog')->group(function(){
+        Route::get('/{slug}',   [BlogPostsController::class, 'get']);
+    });
+
+    // Route::name('test.')->prefix('test')->group(function () {
+    //     Route::get('/', 'testController@index');
+    //     Route::get('/{id}', 'testController@show');
+    // });
+
 
 });
 

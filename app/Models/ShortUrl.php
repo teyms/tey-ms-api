@@ -12,10 +12,14 @@ class ShortUrl extends Model
     protected $table = 'short_url';
 
     protected $fillable = [
+        'user_id',
+        'guest_identifier',
         'url',
-        'ori_url',
+        'original_url',
+        'title',
+        'description',  
         'ip_address',
-        'used_count',
-        'expired_date',
+        'click_count',
+        'expires_at',
     ];
 }
