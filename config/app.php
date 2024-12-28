@@ -195,5 +195,9 @@ return [
     */
 
     'tng_convert_csv_python' => env('TNG_CONVERT_CSV_PYTHON', null),
+    'throttle' => [
+        'authenticated' => env('THROTTLE_AUTHENTICATED', null),
+        'guest'         => env('THROTTLE_GUEST', null),
+    ],
 
 ];
