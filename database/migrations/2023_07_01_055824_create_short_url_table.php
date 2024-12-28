@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('ip_address')->nullable();
             $table->integer('click_count')->default(0);
             $table->dateTime('expires_at')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
         });
         // ensure either user_id or guest_identifier is present
