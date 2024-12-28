@@ -8,10 +8,19 @@ use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Cache\RateLimiting\Limit;
 use GuzzleHttp\Client;
 
 class VerifyToken
 {
+    protected $throttle;
+
+    public function __construct(ThrottleRequests $throttle)
+    {
+        $this->throttle = $throttle;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -19,11 +28,19 @@ class VerifyToken
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+        // Create a response closure for throttle
+        $response = function ($request) use ($next) {
+            return $next($request);
+        };
+
         // Extract token from Authorization header
         $authHeader = $request->header('Authorization');
 
         if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
             $request->merge(['is_authenticated' => false]);
+            // $this->throttle->handle($request, $response, '30', '1');
+            $this->throttle->handle($request, $response, ...explode(',', config('app.throttle.guest')));
 
         }else{    
             $token = substr($authHeader, 7);
@@ -32,6 +49,15 @@ class VerifyToken
             if($isAuthenticated && $isAuthenticated['success']){
                 $request->merge(['user' => $isAuthenticated['user']]);
                 $request->merge(['is_authenticated' => true]);
+
+                $request->setUserResolver(function() use ($isAuthenticated){
+                    return $isAuthenticated['user'];
+                });
+
+                // $this->throttle->handle($request, $response, '60', '1');
+                // Apply authenticated throttle from config
+                $this->throttle->handle($request, $response, ...explode(',', config('app.throttle.authenticated')));
+
             }else{
                 $request->merge(['user' => null]);
                 $request->merge(['is_authenticated' => false]);   

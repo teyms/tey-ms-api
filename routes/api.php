@@ -35,7 +35,8 @@ use App\Http\Middleware\VerifyToken;
 
 
 
-Route::middleware(['concurrent', 'sanitize','custom.auth'])->group(function () {
+// Route::middleware(['concurrent', 'sanitize','custom.auth', 'activity.log','throttle:60,1|30,1'])->group(function () {
+Route::middleware(['concurrent', 'sanitize','custom.auth', 'activity.log'])->group(function () {
 // Route::middleware([ConcurrentRequestsThrottle::class])->group(function () {
     // Route::middleware(['check.site.prefix'])->name('member.')->prefix('member')->namespace('User')->group(function () {
     //     Route::middleware(['guest'])->group(function () {

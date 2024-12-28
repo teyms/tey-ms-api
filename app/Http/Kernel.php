@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            'throttle:100,1',
+            // 'throttle:100,1',
         ],
     ];
 
@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'concurrent' => \App\Http\Middleware\ConcurrentRequestsThrottle::class,
         'custom.auth' => \App\Http\Middleware\VerifyToken::class,
         'auth.required' => \App\Http\Middleware\AuthRequired::class,
+        'activity.log' => \App\Http\Middleware\LogActivity::class,
     ];
 }
