@@ -30,9 +30,9 @@ class VerifyToken
     {
 
         // Create a response closure for throttle
-        $response = function ($request) use ($next) {
-            return $next($request);
-        };
+        // $response = function ($request) use ($next) {
+        //     return $next($request);
+        // };
 
         // Extract token from Authorization header
         $authHeader = $request->header('Authorization');
@@ -40,7 +40,8 @@ class VerifyToken
         if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
             $request->merge(['is_authenticated' => false]);
             // $this->throttle->handle($request, $response, '30', '1');
-            $this->throttle->handle($request, $response, ...explode(',', config('app.throttle.guest')));
+            // $this->throttle->handle($request, $response, ...explode(',', config('app.throttle.guest')));
+            return $this->throttle->handle($request, $next, ...explode(',', config('app.throttle.guest')));
 
         }else{    
             $token = substr($authHeader, 7);
@@ -56,7 +57,7 @@ class VerifyToken
 
                 // $this->throttle->handle($request, $response, '60', '1');
                 // Apply authenticated throttle from config
-                $this->throttle->handle($request, $response, ...explode(',', config('app.throttle.authenticated')));
+                return $this->throttle->handle($request, $next, ...explode(',', config('app.throttle.authenticated')));
 
             }else{
                 $request->merge(['user' => null]);
@@ -72,7 +73,8 @@ class VerifyToken
             }
             
         }
-        return $next($request);
+        // return $next($request);
+        return $this->throttle->handle($request, $next, ...explode(',', config('app.throttle.guest')));
     }
 
     private function validateToken($authToken){

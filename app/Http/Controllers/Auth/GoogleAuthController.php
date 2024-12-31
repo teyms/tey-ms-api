@@ -86,6 +86,15 @@ class GoogleAuthController extends Controller
                 
             }
 
+            if($latest_token->expires_at && Carbon::parse($latest_token->expires_at)->isPast()){
+                $result = [
+                    'success'   => 1,
+                    'msg'       => 'Logged out successfully, due to token expired',
+                    'data'      => null
+                ];
+                $result_code = 200;
+                return response()->json($result, $result_code);
+            }
 
             // Get the token ID
             $tokenId = $latest_token->id; // This is the ID of the latest token

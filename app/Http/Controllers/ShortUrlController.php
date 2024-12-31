@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\ShortUrl;
+use App\Models\User;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -164,6 +165,8 @@ class ShortUrlController extends Controller
     public function storeAuth(ShortUrlRequest $request){
         try{
             $params = [];
+            if($request->has('short_url_path') && isset($request->short_url_path))  $params['short_url_path'] = $request->short_url_path;
+            
             if($request->has('original_url') && isset($request->original_url))  $params['original_url'] = $request->original_url;
             if($request->has('customPath') && isset($request->customPath))      $params['url'] = $request->customPath;
             if($request->has('title') && isset($request->title))                $params['title'] = $request->title;
@@ -191,8 +194,20 @@ class ShortUrlController extends Controller
             }
 
             if(!$user->short_url_path){
-                $result['msg'] = 'Please set your default unique path first before using the shorturl service';
-                return response()->json($result, $result_code);
+
+                if(isset($params['short_url_path'])){
+                    $user_model = User::find($user->id);
+                    $user_model->short_url_path = $params['short_url_path'];
+
+                    // Save the updated model
+                    if(!$user_model->save()){
+                        $result['msg'] = "Failed to update Unique Identifier Code for {$params['short_url_path']}";
+                        return response()->json($result, $result_code);
+                    }
+                }else{
+                    $result['msg'] = 'Please set your default Unique Identifier Code first before using the shorturl service';
+                    return response()->json($result, $result_code);
+                }
             }
 
             $shortUrlExist = ShortUrl::leftJoin('users', 'short_url.user_id', '=', 'users.id')                                    
@@ -219,7 +234,7 @@ class ShortUrlController extends Controller
             ]);
 
             if(!$createdShortUrl){
-                $result['msg'] = `Failed to create shorturl for {$params['url']}`;
+                $result['msg'] = "Failed to create shorturl for {$params['url']}";
                 return response()->json($result, $result_code);
             }
 
@@ -227,7 +242,8 @@ class ShortUrlController extends Controller
                 'success'   => 1,
                 'msg'       => 'Successfully Added ShorURl',
                 'data'      => [
-                    'shorten_url'   => $createdShortUrl->url
+                    'shorten_url'       => $createdShortUrl->url,
+                    'short_url_path'    => $user_model->short_url_path
                 ]
             ];
             $result_code = 200;
@@ -331,7 +347,7 @@ class ShortUrlController extends Controller
             $updateShortUrl = $shortUrlExist->save();
 
             if(!$updateShortUrl){
-                $result['msg'] = `Failed to update shorturl for {$params['url']}`;
+                $result['msg'] = "Failed to update shorturl for {$params['url']}";
                 return response()->json($result, $result_code);
 
             }
@@ -401,7 +417,7 @@ class ShortUrlController extends Controller
             $deleteShortUrl = $shortUrlExist->save();
 
             if(!$deleteShortUrl){
-                $result['msg'] = `Failed to update shorturl for {$shortUrlExist->url}`;
+                $result['msg'] = "Failed to update shorturl for {$shortUrlExist->url}";
                 return response()->json($result, $result_code);
             }
 

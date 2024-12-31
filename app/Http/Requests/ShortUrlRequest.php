@@ -29,6 +29,7 @@ class ShortUrlRequest extends FormRequest
 
         // Check if a user is present in the request (added by your VerifyToken middleware)
         if ($this->has('user') && $this->get('user')) {
+            $rules['short_url_path'] = ['string','min:5','max:30'];
             $rules['customPath'] = [
                 'required',
                 // 'unique:short_urls,custom_path',
